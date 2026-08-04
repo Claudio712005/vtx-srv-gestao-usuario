@@ -18,8 +18,6 @@ import java.time.Duration;
 @ConditionalOnProperty(value = "spring.redis.enabled", havingValue = "true", matchIfMissing = true)
 public class RedisConfig {
 
-    public static final String CACHE_MANAGER = "cacheManager";
-
     @Bean
     public JedisConnectionFactory redisConnectionFactory(
             @Value("${spring.redis.host:localhost}") String host,
