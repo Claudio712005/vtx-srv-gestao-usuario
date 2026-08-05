@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Sensitive {
-    int digitosOcultos() default 0;
-    boolean ocultar() default false;
+public @interface CpfCnpj {
+    String mensagem() default "Documento inválido. Informe um CPF ou CNPJ válido.";
 }

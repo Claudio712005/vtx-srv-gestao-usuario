@@ -33,7 +33,7 @@ public class UsuarioEntity {
     @Column(name = "SENHA_USR", nullable = false)
     private String senha;
 
-    @Sensitive(digits = 4)
+    @Sensitive(digitosOcultos = 4)
     @Column(name = "DOC_USR", nullable = false)
     private byte[] documento;
 
