@@ -6,79 +6,75 @@ import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.regex.Pattern;
+
 @Slf4j
 public class CpfCnpjValidator implements ConstraintValidator<CpfCnpj, String> {
 
-    @Override
-    public void initialize(CpfCnpj constraintAnnotation) {
-        ConstraintValidator.super.initialize(constraintAnnotation);
-    }
+    private static final Pattern CPF = Pattern.compile("[0-9]{11}");
+    private static final Pattern CNPJ = Pattern.compile("[A-Z0-9]{12}[0-9]{2}");
+    private static final int[] PESOS_PRIMEIRO_DIGITO = {5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+    private static final int[] PESOS_SEGUNDO_DIGITO = {6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-
-        if(StringUtils.isNotBlank(value)){
-            String documento = value.replaceAll("[^a-zA-Z0-9]", "");
-
-            if(documento.length() == 11){
-                return isCpfValido(documento);
-            } else if(documento.length() == 14){
-                return isCnpjAlfaValido(documento) || isCnpjNumericoValido(documento);
-            }
+        if (StringUtils.isBlank(value)) {
+            return false;
         }
 
-        return false;
+        String documento = value.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
+
+        return switch (documento.length()) {
+            case 11 -> isCpfValido(documento);
+            case 14 -> isCnpjValido(documento);
+            default -> false;
+        };
     }
 
     private boolean isCpfValido(String cpf) {
-        char dig10, dig11;
-        int sm, i, r, num, peso;
-
-        try{
-            sm = 0;
-            peso = 10;
-
-            for (i = 0; i < 9; i++) {
-                num = cpf.charAt(i) - 48;
-                sm = sm + (num * peso);
-                peso = peso - 1;
-            }
-
-            r = 11 - (sm % 11);
-            if ((r == 10) || (r == 11)) {
-                dig10 = '0';
-            } else {
-                dig10 = (char) (r + 48);
-            }
-
-            sm = 0;
-            peso = 11;
-            for(i=0; i<10; i++) {
-                num = cpf.charAt(i) - 48;
-                sm = sm + (num * peso);
-                peso = peso - 1;
-            }
-
-            r = 11 - (sm % 11);
-            if ((r == 10) || (r == 11)) {
-                dig11 = '0';
-            } else {
-                dig11 = (char) (r + 48);
-            }
-
-            return (dig10 == cpf.charAt(9)) && (dig11 == cpf.charAt(10));
-        } catch (Exception e) {
+        if (!CPF.matcher(cpf).matches() || possuiTodosCaracteresIguais(cpf)) {
             return false;
         }
+
+        int primeiroDigito = calcularDigito(cpf, 9, 10);
+        int segundoDigito = calcularDigito(cpf, 10, 11);
+
+        return primeiroDigito == Character.getNumericValue(cpf.charAt(9))
+                && segundoDigito == Character.getNumericValue(cpf.charAt(10));
     }
 
-    private boolean isCnpjAlfaValido(String cnpj) {
-        // Implementação da validação de CNPJ
-        return true; // Retorne true se o CNPJ for válido, caso contrário, false
+    private boolean isCnpjValido(String cnpj) {
+        if (!CNPJ.matcher(cnpj).matches() || possuiTodosCaracteresIguais(cnpj)) {
+            return false;
+        }
+
+        int primeiroDigito = calcularDigitoCnpj(cnpj, PESOS_PRIMEIRO_DIGITO);
+        int segundoDigito = calcularDigitoCnpj(cnpj, PESOS_SEGUNDO_DIGITO);
+
+        return primeiroDigito == Character.getNumericValue(cnpj.charAt(12))
+                && segundoDigito == Character.getNumericValue(cnpj.charAt(13));
     }
 
-    private boolean isCnpjNumericoValido(String cnpj) {
-        // Implementação da validação de CNPJ
-        return true; // Retorne true se o CNPJ for válido, caso contrário, false
+    private int calcularDigito(String cpf, int quantidade, int pesoInicial) {
+        int soma = 0;
+        int peso = pesoInicial;
+        for (int i = 0; i < quantidade; i++) {
+            soma += Character.getNumericValue(cpf.charAt(i)) * peso--;
+        }
+        int digito = 11 - (soma % 11);
+        return digito >= 10 ? 0 : digito;
+    }
+
+    private int calcularDigitoCnpj(String cnpj, int[] pesos) {
+        int soma = 0;
+        for (int i = 0; i < pesos.length; i++) {
+            soma += (cnpj.charAt(i) - '0') * pesos[i];
+        }
+        int resto = soma % 11;
+        return resto < 2 ? 0 : 11 - resto;
+    }
+
+    private boolean possuiTodosCaracteresIguais(String documento) {
+        return documento.chars().distinct().count() == 1;
     }
 }
