@@ -1,4 +1,4 @@
-package br.com.claus.vtx.srv.gestao.usuario.dto.request;
+package br.com.claus.vtx.srv.gestao.usuario.api.dto.request;
 
 import br.com.claus.vtx.srv.gestao.usuario.utils.annotations.CpfCnpj;
 import br.com.claus.vtx.srv.gestao.usuario.utils.annotations.MinAge;
