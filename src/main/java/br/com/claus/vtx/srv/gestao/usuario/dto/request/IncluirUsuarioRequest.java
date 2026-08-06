@@ -39,7 +39,7 @@ public class IncluirUsuarioRequest {
     @Pattern(message = "A senha não deve conter espaços em branco", regexp = "^(?=\\S+$).*$")
     private String senha;
 
-    @CpfCnpj(mensagem = "O campo 'documento' deve ser um CPF ou CNPJ válido")
+    @CpfCnpj(message = "O campo 'documento' deve ser um CPF ou CNPJ válido")
     @Sensitive(ocultar = true)
     @Schema(name = "documento", description = "Documento do usuário (CPF ou CNPJ)", example = "123.456.789-00", requiredMode = Schema.RequiredMode.REQUIRED)
     private String documento;
