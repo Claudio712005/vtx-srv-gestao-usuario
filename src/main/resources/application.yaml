@@ -36,6 +36,17 @@ spring:
     redis:
       enable-statistics: ${REDIS_ENABLE_STATISTICS:true}
 
+management:
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317/v1/traces}
+    logging:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317/v1/logs}
+
 springdoc:
   api-docs:
     enabled: ${API_DOCS_ENABLED:true}

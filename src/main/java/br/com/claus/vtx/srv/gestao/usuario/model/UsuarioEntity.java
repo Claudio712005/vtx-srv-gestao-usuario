@@ -2,15 +2,13 @@ package br.com.claus.vtx.srv.gestao.usuario.model;
 
 import br.com.claus.vtx.srv.gestao.usuario.utils.annotations.Sensitive;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
