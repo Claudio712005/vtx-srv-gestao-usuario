@@ -1,3 +1,8 @@
+app:
+  crypto:
+    documento:
+      key: ${DOC_CRYPTO_KEY:JeXHtHBzLpcfGwyFOVWv9e6Ws6UWpiEw/hvVH52fjRw=}
+
 spring:
   autoconfigure:
     exclude:

@@ -47,6 +47,11 @@ management:
         otlp:
           endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317/v1/logs}
 
+app:
+  crypto:
+    documento:
+      key: ${DOC_CRYPTO_KEY:}
+
 springdoc:
   api-docs:
     enabled: ${API_DOCS_ENABLED:true}
